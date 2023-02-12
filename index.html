@@ -112,7 +112,7 @@
         const getAll=async()=>{
             //VILLA HERMOSA
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/1587003/feeds.json?results=10"),
+                let res=await fetch("https://api.thingspeak.com/channels/1587003/feeds.json?results=5"),
                 data=await res.json();
                
                 let { feeds } = data;
@@ -144,7 +144,7 @@
             };
             //MIRAFLORES
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/1586998/feeds.json?results=10"),
+                let res=await fetch("https://api.thingspeak.com/channels/1586998/feeds.json?results=5"),
                 data=await res.json();
                
                 let { feeds } = data;
@@ -179,7 +179,7 @@
             };
             //MARIANO MELGAR
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/2028418/feeds.json?results=11"),
+                let res=await fetch("https://api.thingspeak.com/channels/2028418/feeds.json?results=6"),
                 data=await res.json();
                
                 let { feeds } = data;
@@ -234,7 +234,7 @@
             };
             //FRANCISCO BOLOGNESI
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/2028415/feeds.json?results=11"),
+                let res=await fetch("https://api.thingspeak.com/channels/2028415/feeds.json?results=6"),
                 data=await res.json();
                
                 let { feeds } = data;
