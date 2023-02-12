@@ -8,11 +8,11 @@
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <style>
         *{
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
         
         .fila {
-            height: 900px;
+            height: 400px;
             border: 0.5px solid rgb(250, 242, 242);
             overflow: auto;
         }
@@ -22,7 +22,7 @@
 <body>
     <main class="container-fluid">
         <div class="row">
-            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 fila">
                 <h2>Villa Hermosa</h2>
                 <table class="tabla-villa table table-striped text-center">
                     <thead>
@@ -35,7 +35,7 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 fila">
                 <h2>Mariano Melgar</h2>
                 <table class="tabla-mariano table table-striped text-center">
                     <thead>
@@ -48,7 +48,7 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 fila">
                 <h2>Francisco Bolognesi</h2>
                 <table class="tabla-francisco table table-striped text-center">
                     <thead>
@@ -61,7 +61,7 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 fila">
                 <h2>Miraflores</h2>
                 <table class="tabla-miraflores table table-striped text-center">
                     <thead>
@@ -112,7 +112,7 @@
         const getAll=async()=>{
             //VILLA HERMOSA
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/1587003/feeds.json?results=50"),
+                let res=await fetch("https://api.thingspeak.com/channels/1587003/feeds.json?results=10"),
                 data=await res.json();
                
                 let { feeds } = data;
@@ -144,7 +144,7 @@
             };
             //MIRAFLORES
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/1586998/feeds.json?results=50"),
+                let res=await fetch("https://api.thingspeak.com/channels/1586998/feeds.json?results=10"),
                 data=await res.json();
                
                 let { feeds } = data;
@@ -179,7 +179,7 @@
             };
             //MARIANO MELGAR
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/2028418/feeds.json?results=51"),
+                let res=await fetch("https://api.thingspeak.com/channels/2028418/feeds.json?results=11"),
                 data=await res.json();
                
                 let { feeds } = data;
@@ -234,7 +234,7 @@
             };
             //FRANCISCO BOLOGNESI
             try {
-                let res=await fetch("https://api.thingspeak.com/channels/2028415/feeds.json?results=51"),
+                let res=await fetch("https://api.thingspeak.com/channels/2028415/feeds.json?results=11"),
                 data=await res.json();
                
                 let { feeds } = data;
