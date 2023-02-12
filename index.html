@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <style>
+        *{
+            font-size: 0.9rem;
+        }
+        
+        .fila {
+            height: 900px;
+            border: 0.5px solid rgb(250, 242, 242);
+            overflow: auto;
+        }
+    </style>
+    <title>Data</title>
+</head>
+<body>
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+                <h2>Villa Hermosa</h2>
+                <table class="tabla-villa table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Prec-5 min</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+                <h2>Mariano Melgar</h2>
+                <table class="tabla-mariano table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Prec-5 min</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+                <h2>Francisco Bolognesi</h2>
+                <table class="tabla-francisco table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Prec-5 min</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 fila">
+                <h2>Miraflores</h2>
+                <table class="tabla-miraflores table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Prec-5 min</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        
+    </main>
+    <template id="template">
+        <tr>
+            <td class="fecha_"></td>
+            <td class="hora_"></td>
+            <td class="prec5min_"></td>
+        </tr>
+    </template>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-2.18.0.min.js"></script>
+    <script>
+        const d=document,
+        $tablaVilla=d.querySelector(".tabla-villa"),
+        $tablaMiraflores=d.querySelector(".tabla-miraflores"),
+        $tablaMariano=d.querySelector(".tabla-mariano"),
+        $tablaFrancisco=d.querySelector(".tabla-francisco"),
+        $template=d.getElementById("template").content,
+        $fragment=d.createDocumentFragment();
+        $fragment1=d.createDocumentFragment();
+
+        setInterval(()=>{
+            let minuto=new Date().getMinutes();
+            
+            if(minuto===0 || minuto===5 || minuto===10 || minuto===15 || minuto===20 || minuto===25 || minuto===30 || minuto===35 || minuto===40 || minuto===45 || minuto===50 || minuto===55){
+                location.reload();                                       
+            };
+        },60000);
+
+        const getAll=async()=>{
+            //VILLA HERMOSA
+            try {
+                let res=await fetch("https://api.thingspeak.com/channels/1587003/feeds.json?results=50"),
+                data=await res.json();
+               
+                let { feeds } = data;
+                let feeds_rev = [...feeds].reverse();
+                console.log(feeds);
+                feeds_rev.forEach(element => {
+                    let dt_utc_server=element.created_at;
+                    //eliminamos el ultimo caracter de la cadena
+                    //let dato_cadena_corr=dato_cadena.substring(0,dato_cadena.length-1);
+                    let dt_utc=new Date(dt_utc_server);
+                    let dt_local=dt_utc.toLocaleString();
+                    let dt_local_=dt_local.split(",");
+
+                    $template.querySelector(".fecha_").textContent=`${dt_local_[0]}`;
+                    $template.querySelector(".hora_").textContent=`${dt_local_[1]}`;
+                    $template.querySelector(".prec5min_").textContent=element.field1;
+
+                    let $clone = d.importNode($template,true);
+                    $fragment.appendChild($clone);
+                });
+                $tablaVilla.querySelector("tbody").appendChild($fragment);
+
+                if(!res.ok) throw {status:res.status, statusText:res.statusText};
+
+                
+            } catch (error) {
+                let message = error.statusText || "Ocurrió un error";
+                $tablaVilla.insertAdjacentHTML("afterend",`Error: ${message}`);
+            };
+            //MIRAFLORES
+            try {
+                let res=await fetch("https://api.thingspeak.com/channels/1586998/feeds.json?results=50"),
+                data=await res.json();
+               
+                let { feeds } = data;
+                let feeds_rev = [...feeds].reverse();
+                console.log(feeds);
+                feeds_rev.forEach(element => {
+                    dt_utc_server=element.created_at;
+                    
+                    //eliminamos el ultimo caracter de la cadena
+                    //let dato_cadena_corr=dato_cadena.substring(0,dato_cadena.length-1);
+                    dt_utc=new Date(dt_utc_server);
+                    
+                    dt_local=dt_utc.toLocaleString();
+                    dt_local_=dt_local.split(",");
+                    console.log(dt_local_);
+
+                    $template.querySelector(".fecha_").textContent=`${dt_local_[0]}`;
+                    $template.querySelector(".hora_").textContent=`${dt_local_[1]}`;
+                    $template.querySelector(".prec5min_").textContent=element.field1;
+
+                    $clone = d.importNode($template,true);
+                    $fragment.appendChild($clone);
+                });
+                $tablaMiraflores.querySelector("tbody").appendChild($fragment);
+
+                if(!res.ok) throw {status:res.status, statusText:res.statusText};
+
+                
+            } catch (error) {
+                let message = error.statusText || "Ocurrió un error";
+                $tablaMiraflores.insertAdjacentHTML("afterend",`Error: ${message}`);
+            };
+            //MARIANO MELGAR
+            try {
+                let res=await fetch("https://api.thingspeak.com/channels/2028418/feeds.json?results=51"),
+                data=await res.json();
+               
+                let { feeds } = data;
+                let feeds_rev = [...feeds].reverse();
+                let datos=[];
+                let datos_prec=[];
+                let valor;
+                
+                feeds_rev.forEach(el=>{
+                    let datoUnico=el.field1;
+                    datos.push(parseInt(datoUnico));
+                });
+                let [...resto] = datos;
+                //shift elimina el primer elemento de la lista
+                resto.shift();
+                
+                for (let i=0; i<resto.length; i++){
+                    let diferencia = datos[i]-resto[i];
+                    if(diferencia>=0){
+                        valor = (diferencia*0.2).toFixed(1);
+                    }else{
+                        valor=(datos[i]*0.2).toFixed(1);
+                    }
+                    datos_prec.push(valor);
+                };
+                console.log(datos_prec);
+                feeds_rev.forEach((element,i) => {
+                    if(i<=feeds_rev.length-2){
+                        let dt_utc_server=element.created_at;
+                    //eliminamos el ultimo caracter de la cadena
+                    //let dato_cadena_corr=dato_cadena.substring(0,dato_cadena.length-1);
+                    let dt_utc=new Date(dt_utc_server);
+                    let dt_local=dt_utc.toLocaleString();
+                    let dt_local_=dt_local.split(",");
+
+                    $template.querySelector(".fecha_").textContent=`${dt_local_[0]}`;
+                    $template.querySelector(".hora_").textContent=`${dt_local_[1]}`;
+                    $template.querySelector(".prec5min_").textContent=`${datos_prec[i]}`;
+
+                    let $clone = d.importNode($template,true);
+                    $fragment.appendChild($clone);
+                    }
+                });
+                $tablaMariano.querySelector("tbody").appendChild($fragment);
+
+                if(!res.ok) throw {status:res.status, statusText:res.statusText};
+
+                
+            } catch (error) {
+                let message = error.statusText || "Ocurrió un error";
+                $tablaMariano.insertAdjacentHTML("afterend",`Error: ${message}`);
+            };
+            //FRANCISCO BOLOGNESI
+            try {
+                let res=await fetch("https://api.thingspeak.com/channels/2028415/feeds.json?results=51"),
+                data=await res.json();
+               
+                let { feeds } = data;
+                let feeds_rev = [...feeds].reverse();
+                let datos=[];
+                let datos_prec=[];
+                let valor;
+                
+                feeds_rev.forEach(el=>{
+                    let datoUnico=el.field1;
+                    datos.push(parseInt(datoUnico));
+                });
+                let [...resto] = datos;
+                //shift elimina el primer elemento de la lista
+                resto.shift();
+                
+                for (let i=0; i<resto.length; i++){
+                    let diferencia = datos[i]-resto[i];
+                    if(diferencia>=0){
+                        valor = (diferencia*0.2).toFixed(1);
+                    }else{
+                        valor=(datos[i]*0.2).toFixed(1);
+                    }
+                    datos_prec.push(valor);
+                };
+                console.log(datos_prec);
+                feeds_rev.forEach((element,i) => {
+                    if(i<=feeds_rev.length-2){
+                        let dt_utc_server=element.created_at;
+                    //eliminamos el ultimo caracter de la cadena
+                    //let dato_cadena_corr=dato_cadena.substring(0,dato_cadena.length-1);
+                    let dt_utc=new Date(dt_utc_server);
+                    let dt_local=dt_utc.toLocaleString();
+                    let dt_local_=dt_local.split(",");
+
+                    $template.querySelector(".fecha_").textContent=`${dt_local_[0]}`;
+                    $template.querySelector(".hora_").textContent=`${dt_local_[1]}`;
+                    $template.querySelector(".prec5min_").textContent=`${datos_prec[i]}`;
+
+                    let $clone = d.importNode($template,true);
+                    $fragment.appendChild($clone);
+                    }
+                });
+                $tablaFrancisco.querySelector("tbody").appendChild($fragment);
+
+                if(!res.ok) throw {status:res.status, statusText:res.statusText};
+
+                
+            } catch (error) {
+                let message = error.statusText || "Ocurrió un error";
+                $tablaFrancisco.insertAdjacentHTML("afterend",`Error: ${message}`);
+            };
+        };
+
+       
+
+        d.addEventListener("DOMContentLoaded",getAll);
+        
+    </script>
+</body>
+</html>
